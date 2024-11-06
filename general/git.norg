@@ -1,0 +1,8 @@
+* Adjust git performance for large repo (currently seeing very slow `git status`)
+  Found {https://www.git-tower.com/blog/git-performance/#how-to-speed-up-the-working-tree}[here]
+  - `git config feature.manyFiles true` in repo dir. This tells `git` to use a newer index file version which is smaller and, thusly, rewritten faster. Also enables an untracked file cache. `git update-index --index-version 4` after enabling to update the index version.
+  - `git config core.fsmonitor true` enables `git`'s built-in file system monitor daemon. This helps `git` avoid comparing changes against the index on `status` or `add` and will compare only against changed files. You can check if it's running with `git fsmonitor--daemon status`.
+  - `git config core.untrackedcache true` adds a cache to the index of untracked search, making performance of actions using the index faster.
+  - `git gc` or "git garbage collection" is a command that is run periodically by `git` but may also be run manually. This cleans up the local pack file and improves performance.
+  - `git config core.commitgraph true` will enable a commit history cache, speeding up repeated uses of `log` or other history operations.
+  - `git config fetch.writeCommitGraph true` tells `git gc` to update the commit-graph during operation. To immediately write the cache run `git commit-graph write --reachable`.
